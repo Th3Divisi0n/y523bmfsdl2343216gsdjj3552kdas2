@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Custom Alphabet Encrypter</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #eee;
+      font-family: monospace, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    textarea {
+      width: 300px;
+      height: 100px;
+      margin: 10px 0;
+      font-family: monospace;
+      font-size: 16px;
+      background: #222;
+      color: #eee;
+      border: 1px solid #444;
+      padding: 8px;
+      resize: vertical;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #0f0;
+      border: none;
+      border-radius: 5px;
+      color: black;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #0c0;
+    }
+    #output {
+      white-space: pre-wrap;
+      margin-top: 20px;
+      width: 300px;
+      min-height: 50px;
+      background: #222;
+      padding: 10px;
+      border: 1px solid #444;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Custom Alphabet Encrypter</h1>
+
+  <textarea id="inputText" placeholder="Enter your message here..."></textarea>
+
+  <div>
+    <button id="encodeBtn">Encode</button>
+    <button id="decodeBtn">Decode</button>
+  </div>
+
+  <div id="output" placeholder="Output will appear here..."></div>
+
+  <script>
+    // Your Secret Alphabet (shifted by 14 in your Python example, but note shift = 1 here)
+    // Original secret alphabet from Python code:
+    const Secret_alphabet = [
+      "1", "2", "6", "5", "1", "8", "9", "3", "11", "4", "10", "15",
+      "13", "14", "12", "18", "16", "19", "17", "20", "22", "21", "24",
+      "25", "23", "26"
+    ];
+
+    const english_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const shift = 1;
+
+    if (Secret_alphabet.length !== english_letters.length) {
+      alert("Error: Secret_alphabet must have exactly 26 elements.");
+    }
+
+    // Build the shifted English to secret map (shift applied)
+    const shifted_english_to_secret = {};
+    for (let i = 0; i < english_letters.length; i++) {
+      shifted_english_to_secret[english_letters[i]] = Secret_alphabet[(i + shift) % Secret_alphabet.length];
+    }
+
+    // Reverse map: secret to English
+    const shifted_secret_to_english = {};
+    for (const [key, value] of Object.entries(shifted_english_to_secret)) {
+      shifted_secret_to_english[value] = key;
+    }
+
+    function encodeMessage(message) {
+      // Convert message to uppercase, then map each char
+      return [...message.toUpperCase()]
+        .map(ch => shifted_english_to_secret[ch] || ch)
+        .join("");
+    }
+
+    function decodeMessage(message) {
+      // Map each character in encoded message back to English
+      // Note: Secret alphabet characters are strings like "1", "2", "6", etc.
+      // So we must handle possibly multi-digit numbers in the encoded message.
+      // Your Python code encoded letters as string numbers, so decode must parse accordingly.
+
+      // Since each encoded letter is a number string (could be 1 or 2 digits),
+      // we will parse the encoded message by extracting numbers from the string.
+
+      // We'll split the encoded message into tokens of digits:
+      const tokens = [];
+      let numberBuffer = "";
+
+      for (const ch of message) {
+        if (/\d/.test(ch)) {
+          numberBuffer += ch;  // accumulate digit characters
+        } else {
+          if (numberBuffer.length > 0) {
+            tokens.push(numberBuffer);
+            numberBuffer = "";
+          }
+          tokens.push(ch); // non-digit character stays as-is
+        }
+      }
+      if (numberBuffer.length > 0) tokens.push(numberBuffer);
+
+      // Now decode tokens
+      return tokens.map(tok => shifted_secret_to_english[tok] || tok).join("");
+    }
+
+    const inputText = document.getElementById("inputText");
+    const outputDiv = document.getElementById("output");
+    const encodeBtn = document.getElementById("encodeBtn");
+    const decodeBtn = document.getElementById("decodeBtn");
+
+    encodeBtn.onclick = () => {
+      const encoded = encodeMessage(inputText.value);
+      outputDiv.textContent = encoded;
+    };
+
+    decodeBtn.onclick = () => {
+      const decoded = decodeMessage(inputText.value);
+      outputDiv.textContent = decoded;
+    };
+  </script>
+
+</body>
+</html>
