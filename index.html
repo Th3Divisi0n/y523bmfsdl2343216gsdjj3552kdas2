@@ -8,7 +8,7 @@
     body {
       background-color: #121212;
       color: #eee;
-      font-family: monospace, monospace;
+      font-family: monospace;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -16,9 +16,8 @@
       padding: 20px;
       min-height: 100vh;
     }
-    textarea {
+    textarea, input {
       width: 300px;
-      height: 100px;
       margin: 10px 0;
       font-family: monospace;
       font-size: 16px;
@@ -26,6 +25,9 @@
       color: #eee;
       border: 1px solid #444;
       padding: 8px;
+    }
+    textarea {
+      height: 100px;
       resize: vertical;
     }
     button {
@@ -52,22 +54,55 @@
       padding: 10px;
       border: 1px solid #444;
     }
+    #unlockSection, #mainSection {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+    #unlockSection.active, #mainSection.active {
+      display: flex;
+    }
   </style>
 </head>
 <body>
 
   <h1>Custom Alphabet Encrypter</h1>
 
-  <textarea id="inputText" placeholder="Enter your message here..."></textarea>
-
-  <div>
-    <button id="encodeBtn">Encode</button>
-    <button id="decodeBtn">Decode</button>
+  <!-- Unlock screen -->
+  <div id="unlockSection" class="active">
+    <input type="password" id="unlockInput" placeholder="Enter unlock code..." />
+    <button id="unlockBtn">Unlock</button>
+    <div id="unlockStatus" style="color: red; margin-top: 10px;"></div>
   </div>
 
-  <div id="output" placeholder="Output will appear here..."></div>
+  <!-- Main Encrypter UI -->
+  <div id="mainSection">
+    <textarea id="inputText" placeholder="Enter your message here..."></textarea>
+    <div>
+      <button id="encodeBtn">Encode</button>
+      <button id="decodeBtn">Decode</button>
+    </div>
+    <div id="output" placeholder="Output will appear here..."></div>
+  </div>
 
   <script>
+    const unlockCode = "1234"; // <-- change this code to whatever you want
+
+    const unlockSection = document.getElementById("unlockSection");
+    const mainSection = document.getElementById("mainSection");
+    const unlockBtn = document.getElementById("unlockBtn");
+    const unlockInput = document.getElementById("unlockInput");
+    const unlockStatus = document.getElementById("unlockStatus");
+
+    unlockBtn.onclick = () => {
+      if (unlockInput.value === unlockCode) {
+        unlockSection.classList.remove("active");
+        mainSection.classList.add("active");
+      } else {
+        unlockStatus.textContent = "Incorrect code. Try again.";
+      }
+    };
+
     const Secret_alphabet = [
       "1", "2", "6", "5", "1", "8", "9", "3", "11", "4", "10", "15",
       "13", "14", "12", "18", "16", "19", "17", "20", "22", "21", "24",
