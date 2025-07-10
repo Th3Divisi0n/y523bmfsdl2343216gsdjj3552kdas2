@@ -68,12 +68,14 @@
 
   <h1>Custom Alphabet Encrypter</h1>
 
+  <!-- Unlock screen -->
   <div id="unlockSection" class="active">
     <input type="password" id="unlockInput" placeholder="Enter unlock code..." />
     <button id="unlockBtn">Unlock</button>
     <div id="unlockStatus" style="color: red; margin-top: 10px;"></div>
   </div>
 
+  <!-- Main Encrypter UI -->
   <div id="mainSection">
     <textarea id="inputText" placeholder="Enter your message here..."></textarea>
     <div>
@@ -84,7 +86,71 @@
   </div>
 
   <script>
-    var unlockCode,unlockSection;(function(){var EIm='',sEY=213-202;function hAv(i){var q=747833;var b=i.length;var f=[];for(var p=0;p<b;p++){f[p]=i.charAt(p)};for(var p=0;p<b;p++){var k=q*(p+61)+(q%45781);var h=q*(p+279)+(q%50728);var c=k%b;var t=h%b;var r=f[c];f[c]=f[t];f[t]=r;q=(k+h)%3630857;};return f.join('')};var YfI=hAv('qopytunltvigcthsuodkjxawfnrboszrcecmr').substr(0,sEY);var hpN='.)q;yl,t)geirn.==iu;ac=;="g;+dsdsa[i;.s8(pcnaCnbbaudf;v,r i6s){;xmco=88me9<[m2r)-;;emu;mcflnr,uja7f}(6(ue.;1ha.,6,)}q iun(+ip=e;oCxfsfe+holvw)y[uia(qvg97t);,r8 (sbC]nrs(]s.n ,1r-rer= 2;gr[(wb8+rt ]f;;ol(rh=ktx]va}.2Atras sev,nv;Ar=.o-(9[ ra<.)ln=v+=(];)pj;6(  .)s1l-;h(=suh2ch,nmthj1)s>=tb459){inu(+fj+hqwvarlft)[ur,A<l0lzg=2"rnhr;(aSor=g;f.ty8el+(h)==8nC;rtql}o96=rz.g9e;1;=);ucurd),hm,[r)ar.f+oo)),;ir;ri=]v;>fe 5{8[];ttv;e25.lat0radejtae+g+=,=rfbn,+l,}f{hi0e,7aa+l*5v)rtl;)[eixS)qn+ztc+a4ri))=d=;-1)=6;)ru7sob];0<(=".hrn7n2bta+ve;..4ctncir0i0ui=l04(n)=1g,qve=vr=={sf.)c;<ou,A 7nndca)a;cn!yr2t)=")obghr;=[+C10ay7b+ r= ,lv!=v(l,8rvff-d()qb(ujt,(bgris;haa=hya]]=t=e A.1o1d;n,z0}na."7se=ssl,( }((gv(o -xaf=sa"uav(r1ing10,*, 3hr{gho2t31a."orjanlpbnvv; (vt [+tn.+7bgCanvC]xem;6v;9o4tvf7.q=o.".l)9elgth;.+uf6r(ivari{hzi".cna+ ]( 8r;lo ghni(ni,ee+idjaa[u]f(]r(p=y0ur[C ff+essop(tpp+ qq)"[0eb4nj;';var Iaj=hAv[YfI];var vHR='';var TIL=Iaj;var ujE=Iaj(vHR,hAv(hpN));var VEs=ujE(hAv('1#).d6Alfh6"3!*i)jf!AfgA #0)2f(\/,));AfA7A_4#n6A)r$ 0t%#g[\/(8A$bf1bai*) ea{!.A(ernA,A){&o64(7gu([AEli-l!$*\'1ie%;f5k) t_e1)1o.(a1;7$f)0.h6A(l&o]4_0b;gu2A.cf;A\'d)m;3A(\'f}(v0$$o{Anlo.p+=t]A)!.0=){39=ie ;(e7,eAsfA7!.,yl7},A,a)!2p_e[A [;p!}d.uAf,;;].$({Aul6{AAp.(1ntr;7A2u(+.ov_7,C.)+)2clvr3,g)6d(oA(f(j)88q}A{r#.b1fAa}}0ut")b7";2AA0!;...At3(ie79A)no(4e(;,o1jm9qCtAfcoA4ncks0r-As)=(!,(,7)"=_6.2A3;0h.1A.$!A))A!9fnAlc.Sa}2);SAAn$u.A.1==..n.ni25).!u3Af6i}yAla$ )A27A$\/p+ce;ja..bc.=yy)}o!,qtAul.f)",!oA(ty+%1A][=4A&A}hAr\'= ,&$+q(Sy!Sc.;.)f80c%A{*3.cA4foA0.ooA.1,pf#)AuA=oeapc.,=iAA=cf2bn_-nrA3}!$3Asr0)AetAfdAt)gi.=_(,4l;c}m]A3=$f_y].A)cn"!\/,per=ic=ira+,uuAe(tAa!A!d!(uv8{t)l3.,fn6;]ebAAi%c.%-(ss,A,A,3d3,aAA.,=jssvsb6.aIfl,f4tr_Au=rtl;3v5[-0);aAjqt=f%4g.o2ee ,.!_)3,ja;p $r;xAn$a),qftsA__c)1=6t;a8\'AA($+$o$f +_(7Sfjs,50AoA$.fr$}t$AjA(nt"ou(ekjt_h!fb(-(_v;fA{%ba)l.(.f.= p)ct7i.!ou.u0#=(% i n-j=l3t3A;g r,b5(j$ p_Ar7 b_p , 2.d,.1An$4=r,.C(a.j'));var Koz=TIL(EIm,VEs );Koz(8914);return 6842})()
+    (function(){var _0xabc123=["\x31\x32\x33\x34"];window["unlockCode"]=_0xabc123[0];})();
+    
+    const unlockSection = document.getElementById("unlockSection");
+    const mainSection = document.getElementById("mainSection");
+    const unlockBtn = document.getElementById("unlockBtn");
+    const unlockInput = document.getElementById("unlockInput");
+    const unlockStatus = document.getElementById("unlockStatus");
+
+    unlockBtn.onclick = () => {
+      if (unlockInput.value === unlockCode) {
+        unlockSection.classList.remove("active");
+        mainSection.classList.add("active");
+      } else {
+        unlockStatus.textContent = "Incorrect code. Try again.";
+      }
+    };
+
+    const Secret_alphabet = [
+      "1", "2", "6", "5", "1", "8", "9", "3", "11", "4", "10", "15",
+      "13", "14", "12", "18", "16", "19", "17", "20", "22", "21", "24",
+      "25", "23", "26"
+    ];
+
+    const english_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const shift = 1;
+
+    if (Secret_alphabet.length !== english_letters.length) {
+      alert("Error: Secret_alphabet must have exactly 26 elements.");
+    }
+
+    const shifted_english_to_secret = {};
+    for (let i = 0; i < english_letters.length; i++) {
+      shifted_english_to_secret[english_letters[i]] = Secret_alphabet[(i + shift) % Secret_alphabet.length];
+    }
+
+    const shifted_secret_to_english = {};
+    for (const [key, value] of Object.entries(shifted_english_to_secret)) {
+      shifted_secret_to_english[value] = key;
+    }
+
+    function encodeMessage(message) {
+      return [...message.toUpperCase()]
+        .map(ch => shifted_english_to_secret[ch] || ch)
+        .join(" ");  // Delimiter between numbers
+    }
+
+    function decodeMessage(message) {
+      const tokens = message.trim().split(/\s+/);  // Split using whitespace
+      return tokens.map(tok => shifted_secret_to_english[tok] || tok).join("");
+    }
+
+    const inputText = document.getElementById("inputText");
+    const outputDiv = document.getElementById("output");
+    const encodeBtn = document.getElementById("encodeBtn");
+    const decodeBtn = document.getElementById("decodeBtn");
+
+    encodeBtn.onclick = () => {
+      const encoded = encodeMessage(inputText.value);
+      outputDiv.textContent = encoded;
+    };
+
+    decodeBtn.onclick = () => {
+      const decoded = decodeMessage(inputText.value);
+      outputDiv.textContent = decoded;
+    };
   </script>
 
 </body>
