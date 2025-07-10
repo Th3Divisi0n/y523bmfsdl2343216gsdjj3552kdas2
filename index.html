@@ -110,6 +110,7 @@
       if (unlockInput.value === window.unlockCode) {
         unlockSection.classList.remove("active");
         mainSection.classList.add("active");
+        unlockStatus.textContent = "";
       } else {
         attempts++;
         if (attempts >= maxAttempts) {
@@ -124,9 +125,55 @@
     };
   </script>
 
-  <!-- Your original encryption/decryption script here -->
+  <!-- Encode/Decode logic -->
   <script>
-    // ... your encode/decode logic ...
+    const Secret_alphabet = [
+      "1", "2", "6", "5", "1", "8", "9", "3", "11", "4", "10", "15",
+      "13", "14", "12", "18", "16", "19", "17", "20", "22", "21", "24",
+      "25", "23", "26"
+    ];
+    const english_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const shift = 1;
+
+    if (Secret_alphabet.length !== english_letters.length) {
+      alert("Error: Secret_alphabet must have exactly 26 elements.");
+    }
+
+    const shifted_english_to_secret = {};
+    for (let i = 0; i < english_letters.length; i++) {
+      shifted_english_to_secret[english_letters[i]] = Secret_alphabet[(i + shift) % Secret_alphabet.length];
+    }
+
+    const shifted_secret_to_english = {};
+    for (const [key, value] of Object.entries(shifted_english_to_secret)) {
+      shifted_secret_to_english[value] = key;
+    }
+
+    function encodeMessage(message) {
+      return [...message.toUpperCase()]
+        .map(ch => shifted_english_to_secret[ch] || ch)
+        .join(" ");  // space-separated codes
+    }
+
+    function decodeMessage(message) {
+      const tokens = message.trim().split(/\s+/);  // split on spaces
+      return tokens.map(tok => shifted_secret_to_english[tok] || tok).join("");
+    }
+
+    const inputText = document.getElementById("inputText");
+    const outputDiv = document.getElementById("output");
+    const encodeBtn = document.getElementById("encodeBtn");
+    const decodeBtn = document.getElementById("decodeBtn");
+
+    encodeBtn.onclick = () => {
+      const encoded = encodeMessage(inputText.value);
+      outputDiv.textContent = encoded;
+    };
+
+    decodeBtn.onclick = () => {
+      const decoded = decodeMessage(inputText.value);
+      outputDiv.textContent = decoded;
+    };
   </script>
 
 </body>
