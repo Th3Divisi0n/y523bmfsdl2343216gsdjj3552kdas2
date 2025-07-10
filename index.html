@@ -68,8 +68,6 @@
   <div id="output" placeholder="Output will appear here..."></div>
 
   <script>
-    // Your Secret Alphabet (shifted by 14 in your Python example, but note shift = 1 here)
-    // Original secret alphabet from Python code:
     const Secret_alphabet = [
       "1", "2", "6", "5", "1", "8", "9", "3", "11", "4", "10", "15",
       "13", "14", "12", "18", "16", "19", "17", "20", "22", "21", "24",
@@ -83,52 +81,24 @@
       alert("Error: Secret_alphabet must have exactly 26 elements.");
     }
 
-    // Build the shifted English to secret map (shift applied)
     const shifted_english_to_secret = {};
     for (let i = 0; i < english_letters.length; i++) {
       shifted_english_to_secret[english_letters[i]] = Secret_alphabet[(i + shift) % Secret_alphabet.length];
     }
 
-    // Reverse map: secret to English
     const shifted_secret_to_english = {};
     for (const [key, value] of Object.entries(shifted_english_to_secret)) {
       shifted_secret_to_english[value] = key;
     }
 
     function encodeMessage(message) {
-      // Convert message to uppercase, then map each char
       return [...message.toUpperCase()]
         .map(ch => shifted_english_to_secret[ch] || ch)
-        .join("");
+        .join(" ");  // Delimiter between numbers
     }
 
     function decodeMessage(message) {
-      // Map each character in encoded message back to English
-      // Note: Secret alphabet characters are strings like "1", "2", "6", etc.
-      // So we must handle possibly multi-digit numbers in the encoded message.
-      // Your Python code encoded letters as string numbers, so decode must parse accordingly.
-
-      // Since each encoded letter is a number string (could be 1 or 2 digits),
-      // we will parse the encoded message by extracting numbers from the string.
-
-      // We'll split the encoded message into tokens of digits:
-      const tokens = [];
-      let numberBuffer = "";
-
-      for (const ch of message) {
-        if (/\d/.test(ch)) {
-          numberBuffer += ch;  // accumulate digit characters
-        } else {
-          if (numberBuffer.length > 0) {
-            tokens.push(numberBuffer);
-            numberBuffer = "";
-          }
-          tokens.push(ch); // non-digit character stays as-is
-        }
-      }
-      if (numberBuffer.length > 0) tokens.push(numberBuffer);
-
-      // Now decode tokens
+      const tokens = message.trim().split(/\s+/);  // Split using whitespace
       return tokens.map(tok => shifted_secret_to_english[tok] || tok).join("");
     }
 
