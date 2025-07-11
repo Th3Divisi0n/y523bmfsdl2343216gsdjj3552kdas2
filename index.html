@@ -40,10 +40,11 @@
       border-radius: 5px;
       color: rgb(32, 16, 16);
       font-weight: bold;
-      transition: background 0.3s;
+      transition: background 0.3s, color 0.3s;
     }
     button:hover {
-      background: #ccc;
+      background: rgb(220, 210, 210);
+      color: rgb(32, 16, 16);
     }
     #output {
       white-space: pre-wrap;
@@ -111,20 +112,19 @@
   </div>
 
   <script>
-    // char-code encode and decode for usernames
     const _c = str => [...str].map(c => c.charCodeAt(0)).join('');
-    const _d = code => code.match(/.{2,3}/g).map(c => String.fromCharCode(c)).join('');
+    const _d = code => code.match(/.{1,3}/g).map(c => String.fromCharCode(c)).join('');
+    const b64 = str => atob(str);
 
-    // user unlock code stored as char-code string
-    const userCode = _c("64641759379817983479237986793279863");
+    const userCode = _c(b64("NjQ2NDE3NTkzNzk4MTc5ODM0NzkyMzc5ODY3OTMyNzk4NjM="));
+    const devCode = _c(b64("NjVpdGMzNmZzNjFnZGZzNA=="));
 
-    // dev unlock code stored as Base64 string
-    const devCodeBase64 = "NjVpdGMzNmZzNjFnZGZzNA=="; 
-    const devCode = atob(devCodeBase64);
+    const allowedUsernames = [
+      _c(b64("VGgzRGl2aXNpMG4=")),
+      _c(b64("RGFubmVy"))
+    ];
 
-    // allowed usernames stored as char-code strings
-    const allowedUsernames = [_c("Th3Divisi0n"), _c("Danner")];
-    const allowedDevUsername = _c("Subspace");
+    const allowedDevUsername = _c(b64("U3Vic3BhY2U="));
 
     const unlockSection = document.getElementById("unlockSection");
     const devConfirmSection = document.getElementById("devConfirmSection");
@@ -145,8 +145,8 @@
     const devUnlockStatus = document.getElementById("devUnlockStatus");
 
     unlockBtn.onclick = () => {
-      const usernameCode = _c(usernameInput.value.trim());
-      if (unlockInput.value === _d(userCode) && allowedUsernames.includes(usernameCode)) {
+      const u = _c(usernameInput.value.trim());
+      if (unlockInput.value === _d(userCode) && allowedUsernames.includes(u)) {
         unlockSection.classList.remove("active");
         devConfirmSection.classList.add("active");
         unlockStatus.textContent = "";
@@ -168,8 +168,8 @@
     };
 
     devUnlockBtn.onclick = () => {
-      const devUserCode = _c(devUsernameInput.value.trim());
-      if (devUnlockInput.value === devCode && devUserCode === allowedDevUsername) {
+      const devUser = _c(devUsernameInput.value.trim());
+      if (devUnlockInput.value === _d(devCode) && devUser === allowedDevUsername) {
         window.location.href = "https://th3divisi0n.github.io/UNDERPRIME/";
       } else {
         devUnlockStatus.textContent = "Incorrect developer credentials.";
