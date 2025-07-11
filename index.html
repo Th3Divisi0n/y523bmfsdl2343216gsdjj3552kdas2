@@ -43,7 +43,7 @@
       transition: background 0.3s;
     }
     button:hover {
-      background: #0c0;
+      background: rgb(255,239,239);
     }
     #output {
       white-space: pre-wrap;
@@ -118,14 +118,13 @@
     const userCodeEnc = "NjQ2NDE3NTkzNzk4MTc5ODM0NzkyMzc5ODY3OTMyNzk4NjM="; // base64 of userCode
     const devCodeEnc = "NjVpdGMzNmZzNjFnZGZzNA=="; // base64 of devCode
 
-    // Encrypted usernames (Caesar +3, then base64)
-    // Allowed users: "Th3Divisi0n", "Danner"
-    // Allowed developer username: "Subspace"
-    const allowedUsersEncrypted = [
-      "VGgzRGl2aXNpMG4=",  // "Th3Divisi0n"
-      "RGFubmVy"           // "Danner"
-    ];
-    const allowedDevEncrypted = "U3Vic3BhY2U="; // "Subspace"
+
+const allowedUsersEncrypted = [
+  "V2szR2x5bHZsdjNx",
+  "R2RxcWh1"       
+];
+const allowedDevEncrypted = "VnhleHZzZmg=";
+
 
     // Caesar cipher shift +3
     function caesarShift(str, amount) {
