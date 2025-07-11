@@ -114,45 +114,22 @@
   </div>
 
   <script>
-    // Passwords (obfuscated)
-    const userCodeEnc = "NjQ2NDE3NTkzNzk4MTc5ODM0NzkyMzc5ODY3OTMyNzk4NjM="; // base64 of userCode
-    const devCodeEnc = "NjVpdGMzNmZzNjFnZGZzNA=="; // base64 of devCode
+    // Base64-encoded unlock codes
+    const userCodeEnc = "NjQ2NDE3NTkzNzk4MTc5ODM0NzkyMzc5ODY3OTMyNzk4NjM=";
+    const devCodeEnc = "NjVpdGMzNmZzNjFnZGZzNA==";
 
+    // Base64-only encoded usernames
+    const allowedUsersEncrypted = [
+      btoa("Th3Divisi0n"),
+      btoa("Danner")
+    ];
+    const allowedDevEncrypted = btoa("Subspace");
 
-const allowedUsersEncrypted = [
-  "V2szR2x5bHZsdjNx",
-  "R2RxcWh1"       
-];
-const allowedDevEncrypted = "VnhleHZzZmg=";
-
-
-    // Caesar cipher shift +3
-    function caesarShift(str, amount) {
-      return str.split('').map(ch => {
-        let code = ch.charCodeAt(0);
-        if (code >= 65 && code <= 90) { // A-Z
-          return String.fromCharCode(((code - 65 + amount + 26) % 26) + 65);
-        } else if (code >= 97 && code <= 122) { // a-z
-          return String.fromCharCode(((code - 97 + amount + 26) % 26) + 97);
-        } else {
-          return ch;
-        }
-      }).join('');
-    }
-
-    // Encrypt username with Caesar +3 then base64
+    // Only base64
     function encryptUsername(username) {
-      const shifted = caesarShift(username, 3);
-      return btoa(shifted);
+      return btoa(username.trim());
     }
 
-    // Base64 decode then Caesar -3
-    function decryptUsername(encUsername) {
-      const decoded = atob(encUsername);
-      return caesarShift(decoded, -3);
-    }
-
-    // Decode base64 encoded passwords
     function decodeBase64(str) {
       return atob(str);
     }
@@ -160,13 +137,11 @@ const allowedDevEncrypted = "VnhleHZzZmg=";
     const userCode = decodeBase64(userCodeEnc);
     const devCode = decodeBase64(devCodeEnc);
 
-    // Sections
     const unlockSection = document.getElementById("unlockSection");
     const devConfirmSection = document.getElementById("devConfirmSection");
     const devUnlockSection = document.getElementById("devUnlockSection");
     const mainSection = document.getElementById("mainSection");
 
-    // Inputs and buttons
     const usernameInput = document.getElementById("usernameInput");
     const unlockInput = document.getElementById("unlockInput");
     const unlockBtn = document.getElementById("unlockBtn");
@@ -180,9 +155,8 @@ const allowedDevEncrypted = "VnhleHZzZmg=";
     const devUnlockBtn = document.getElementById("devUnlockBtn");
     const devUnlockStatus = document.getElementById("devUnlockStatus");
 
-    // Step 1: User unlock
     unlockBtn.onclick = () => {
-      const inputUserEnc = encryptUsername(usernameInput.value.trim());
+      const inputUserEnc = encryptUsername(usernameInput.value);
       if (!allowedUsersEncrypted.includes(inputUserEnc)) {
         unlockStatus.textContent = "Invalid username.";
         return;
@@ -193,14 +167,11 @@ const allowedDevEncrypted = "VnhleHZzZmg=";
         unlockBtn.disabled = true;
         return;
       }
-      // Success: show developer confirmation
-      console.log("User logged in:", usernameInput.value);
       unlockSection.classList.remove("active");
       devConfirmSection.classList.add("active");
       unlockStatus.textContent = "";
     };
 
-    // Step 2: Developer confirm buttons
     yesBtn.onclick = () => {
       devConfirmSection.classList.remove("active");
       devUnlockSection.classList.add("active");
@@ -210,9 +181,8 @@ const allowedDevEncrypted = "VnhleHZzZmg=";
       mainSection.classList.add("active");
     };
 
-    // Step 3: Developer unlock check
     devUnlockBtn.onclick = () => {
-      const devUserEnc = encryptUsername(devUsernameInput.value.trim());
+      const devUserEnc = encryptUsername(devUsernameInput.value);
       if (devUserEnc !== allowedDevEncrypted) {
         devUnlockStatus.textContent = "Invalid developer username.";
         return;
@@ -222,12 +192,10 @@ const allowedDevEncrypted = "VnhleHZzZmg=";
         devUnlockInput.value = "";
         return;
       }
-      console.log("Developer logged in:", devUsernameInput.value);
       window.location.href = "aHR0cHM6Ly90aDNkaXZpc2kwbi5naXRodWIuaW8vVU5ERVJQUklORS8=".split("").map(c => String.fromCharCode(c.charCodeAt(0) - 1)).join("");
-      // Redirect is a simple Caesar -1 obfuscation on the URL to add slight "encryption"
     };
 
-    // Encoding/decoding logic (same as before)
+    // Encoder/Decoder
     const Secret_alphabet = [
       "1", "2", "6", "5", "7", "8", "9", "3", "11", "4", "10", "15",
       "13", "14", "12", "18", "16", "19", "17", "20", "22", "21", "24",
@@ -235,10 +203,6 @@ const allowedDevEncrypted = "VnhleHZzZmg=";
     ];
     const english_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     const shift = 1;
-
-    if (Secret_alphabet.length !== english_letters.length) {
-      alert("Error: Secret_alphabet must have exactly 26 elements.");
-    }
 
     const shifted_english_to_secret = {};
     for (let i = 0; i < english_letters.length; i++) {
