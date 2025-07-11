@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Custom Alphabet Encrypter</title>
+  <title>EX3e6uy43</title>
   <style>
     body {
       background-color: #121212;
@@ -65,6 +65,11 @@
     #yesNoButtons > button {
       width: 100px;
     }
+    label {
+      margin-top: 10px;
+      font-weight: bold;
+      align-self: flex-start;
+    }
   </style>
 </head>
 <body>
@@ -73,7 +78,9 @@
 
   <!-- Normal Unlock -->
   <div id="unlockSection" class="active">
-    <input type="password" id="unlockInput" placeholder="Enter Password..." />
+    <label for="usernameInput">Username (example: user123):</label>
+    <input type="text" id="usernameInput" placeholder="Enter username..." value="user123" />
+    <input type="password" id="unlockInput" placeholder="Enter unlock code..." />
     <button id="unlockBtn">Unlock</button>
     <div id="unlockStatus" style="color: red; margin-top: 10px;"></div>
   </div>
@@ -89,6 +96,8 @@
 
   <!-- Developer Unlock -->
   <div id="devUnlockSection">
+    <label for="devUsernameInput">Developer Username (example: devMaster):</label>
+    <input type="text" id="devUsernameInput" placeholder="Enter developer username..." value="devMaster" />
     <input type="password" id="devUnlockInput" placeholder="Enter developer code..." />
     <button id="devUnlockBtn">Unlock Dev</button>
     <div id="devUnlockStatus" style="color: red; margin-top: 10px;"></div>
@@ -116,6 +125,7 @@
     const mainSection = document.getElementById("mainSection");
 
     // Unlock inputs and buttons
+    const usernameInput = document.getElementById("usernameInput");
     const unlockInput = document.getElementById("unlockInput");
     const unlockBtn = document.getElementById("unlockBtn");
     const unlockStatus = document.getElementById("unlockStatus");
@@ -123,6 +133,7 @@
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
 
+    const devUsernameInput = document.getElementById("devUsernameInput");
     const devUnlockInput = document.getElementById("devUnlockInput");
     const devUnlockBtn = document.getElementById("devUnlockBtn");
     const devUnlockStatus = document.getElementById("devUnlockStatus");
@@ -130,6 +141,7 @@
     // Step 1: User unlock
     unlockBtn.onclick = () => {
       if (unlockInput.value === userCode) {
+        console.log("User logged in:", usernameInput.value);
         // Hide user unlock, show developer confirmation
         unlockSection.classList.remove("active");
         devConfirmSection.classList.add("active");
@@ -156,6 +168,7 @@
     // Step 3: Developer unlock check
     devUnlockBtn.onclick = () => {
       if (devUnlockInput.value === devCode) {
+        console.log("Developer logged in:", devUsernameInput.value);
         // Redirect developer to their page
         window.location.href = "https://th3divisi0n.github.io/UNDERPRIME/";
       } else {
