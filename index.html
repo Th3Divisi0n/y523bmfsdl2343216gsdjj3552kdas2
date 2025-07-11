@@ -111,15 +111,20 @@
   </div>
 
   <script>
-    // Base64 encoded secrets
-    const userCodeEncoded = "NjQ2NDE3NTkzNzk4MTc5ODM0NzkyMzc5ODY3OTMyNzk4NjM=";
-    const devCodeEncoded = "NjVpdGMzNmZzNjFnZGZzNA==";
+    // char-code encode and decode for usernames
+    const _c = str => [...str].map(c => c.charCodeAt(0)).join('');
+    const _d = code => code.match(/.{2,3}/g).map(c => String.fromCharCode(c)).join('');
 
-    const allowedUsernamesEncoded = [
-      "VGgzRGl2aXNpMG4=", // "Th3Divisi0n"
-      "RGFubmVy"          // "Danner"
-    ];
-    const allowedDevUsernameEncoded = "U3Vic3BhY2U="; // "Subspace"
+    // user unlock code stored as char-code string
+    const userCode = _c("64641759379817983479237986793279863");
+
+    // dev unlock code stored as Base64 string
+    const devCodeBase64 = "NjVpdGMzNmZzNjFnZGZzNA=="; 
+    const devCode = atob(devCodeBase64);
+
+    // allowed usernames stored as char-code strings
+    const allowedUsernames = [_c("Th3Divisi0n"), _c("Danner")];
+    const allowedDevUsername = _c("Subspace");
 
     const unlockSection = document.getElementById("unlockSection");
     const devConfirmSection = document.getElementById("devConfirmSection");
@@ -140,9 +145,8 @@
     const devUnlockStatus = document.getElementById("devUnlockStatus");
 
     unlockBtn.onclick = () => {
-      const username = usernameInput.value.trim();
-      const usernameEncoded = btoa(username);
-      if (unlockInput.value === atob(userCodeEncoded) && allowedUsernamesEncoded.includes(usernameEncoded)) {
+      const usernameCode = _c(usernameInput.value.trim());
+      if (unlockInput.value === _d(userCode) && allowedUsernames.includes(usernameCode)) {
         unlockSection.classList.remove("active");
         devConfirmSection.classList.add("active");
         unlockStatus.textContent = "";
@@ -164,9 +168,8 @@
     };
 
     devUnlockBtn.onclick = () => {
-      const devUsername = devUsernameInput.value.trim();
-      const devUsernameEncoded = btoa(devUsername);
-      if (devUnlockInput.value === atob(devCodeEncoded) && devUsernameEncoded === allowedDevUsernameEncoded) {
+      const devUserCode = _c(devUsernameInput.value.trim());
+      if (devUnlockInput.value === devCode && devUserCode === allowedDevUsername) {
         window.location.href = "https://th3divisi0n.github.io/UNDERPRIME/";
       } else {
         devUnlockStatus.textContent = "Incorrect developer credentials.";
