@@ -79,7 +79,7 @@
   <!-- Normal Unlock -->
   <div id="unlockSection" class="active">
     <label for="usernameInput">Username :</label>
-    <input type="text" id="usernameInput" placeholder="Enter username..." value="" />
+    <input type="text" id="usernameInput" placeholder="Enter username..." />
     <input type="password" id="unlockInput" placeholder="Enter unlock code..." />
     <button id="unlockBtn">Unlock</button>
     <div id="unlockStatus" style="color: red; margin-top: 10px;"></div>
@@ -97,7 +97,7 @@
   <!-- Developer Unlock -->
   <div id="devUnlockSection">
     <label for="devUsernameInput">Developer Username :</label>
-    <input type="text" id="devUsernameInput" placeholder="Enter developer username..." value="" />
+    <input type="text" id="devUsernameInput" placeholder="Enter developer username..." />
     <input type="password" id="devUnlockInput" placeholder="Enter developer code..." />
     <button id="devUnlockBtn">Unlock Dev</button>
     <div id="devUnlockStatus" style="color: red; margin-top: 10px;"></div>
@@ -114,9 +114,12 @@
   </div>
 
   <script>
-    // Unlock codes (user and dev)
-    const userCode = "64641759379817983479237986793279863";
-    const devCode = "65itc36fs61gdfs4";
+
+    const userCode = atob("NjQ2NDE3NTkzNzk4MTc5ODM0NzkyMzc5ODY3OTMyNzk4NjM=");
+    const devCode = atob("NjVpdGMzNmZzNjFnZGZzNA==");
+
+    const allowedUsers = [atob("VGgzRGl2aXNpMG4="), atob("RGFubmVy")]; 
+    const devUser = atob("VGgzRGl2aXNpMG4="); 
 
     // Sections
     const unlockSection = document.getElementById("unlockSection");
@@ -124,11 +127,11 @@
     const devUnlockSection = document.getElementById("devUnlockSection");
     const mainSection = document.getElementById("mainSection");
 
-    // Unlock inputs and buttons
+    // Inputs
     const usernameInput = document.getElementById("usernameInput");
     const unlockInput = document.getElementById("unlockInput");
-    const unlockBtn = document.getElementById("unlockBtn");
     const unlockStatus = document.getElementById("unlockStatus");
+    const unlockBtn = document.getElementById("unlockBtn");
 
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
@@ -138,11 +141,15 @@
     const devUnlockBtn = document.getElementById("devUnlockBtn");
     const devUnlockStatus = document.getElementById("devUnlockStatus");
 
-    // Step 1: User unlock
+    // Step 1: Normal unlock
     unlockBtn.onclick = () => {
+      const username = usernameInput.value.trim();
+      if (!allowedUsers.includes(username)) {
+        unlockStatus.textContent = "Invalid username.";
+        return;
+      }
+
       if (unlockInput.value === userCode) {
-        console.log("User logged in:", usernameInput.value);
-        // Hide user unlock, show developer confirmation
         unlockSection.classList.remove("active");
         devConfirmSection.classList.add("active");
         unlockStatus.textContent = "";
@@ -153,23 +160,28 @@
       }
     };
 
-    // Step 2: Developer confirm buttons
+    // Step 2: Developer confirmation
     yesBtn.onclick = () => {
-      // Hide confirm, show dev unlock input
+      const username = usernameInput.value.trim();
+      if (username !== devUser) {
+        alert("Only the developer may continue.");
+        return;
+      }
+
       devConfirmSection.classList.remove("active");
       devUnlockSection.classList.add("active");
+      devUsernameInput.value = username; // auto-fill dev username
     };
+
     noBtn.onclick = () => {
-      // Hide confirm, show main UI
       devConfirmSection.classList.remove("active");
       mainSection.classList.add("active");
     };
 
-    // Step 3: Developer unlock check
+    // Step 3: Developer unlock
     devUnlockBtn.onclick = () => {
-      if (devUnlockInput.value === devCode) {
-        console.log("Developer logged in:", devUsernameInput.value);
-        // Redirect developer to their page
+      const username = devUsernameInput.value.trim();
+      if (username === devUser && devUnlockInput.value === devCode) {
         window.location.href = "https://th3divisi0n.github.io/UNDERPRIME/";
       } else {
         devUnlockStatus.textContent = "Incorrect developer code.";
@@ -177,7 +189,7 @@
       }
     };
 
-    // Encoding/decoding logic (same as before)
+    // Encoder / Decoder logic
     const Secret_alphabet = [
       "1", "2", "6", "5", "7", "8", "9", "3", "11", "4", "10", "15",
       "13", "14", "12", "18", "16", "19", "17", "20", "22", "21", "24",
@@ -186,18 +198,12 @@
     const english_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     const shift = 1;
 
-    if (Secret_alphabet.length !== english_letters.length) {
-      alert("Error: Secret_alphabet must have exactly 26 elements.");
-    }
-
     const shifted_english_to_secret = {};
-    for (let i = 0; i < english_letters.length; i++) {
-      shifted_english_to_secret[english_letters[i]] = Secret_alphabet[(i + shift) % Secret_alphabet.length];
-    }
-
     const shifted_secret_to_english = {};
-    for (const [key, value] of Object.entries(shifted_english_to_secret)) {
-      shifted_secret_to_english[value] = key;
+    for (let i = 0; i < english_letters.length; i++) {
+      const shifted = Secret_alphabet[(i + shift) % Secret_alphabet.length];
+      shifted_english_to_secret[english_letters[i]] = shifted;
+      shifted_secret_to_english[shifted] = english_letters[i];
     }
 
     const inputText = document.getElementById("inputText");
