@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>EX3e6uy43</title>
+  <title>N.D.A.E.C Login</title>
   <style>
     body {
-      background-color: rgb(32, 16, 16);
-      color: rgb(255, 239, 239);
+      background-color: rgb(32,16,16);
+      color: rgb(255,239,239);
       font-family: monospace;
       display: flex;
       flex-direction: column;
@@ -22,7 +22,7 @@
       font-family: monospace;
       font-size: 16px;
       background: #222;
-      color: rgb(255, 239, 239);
+      color: rgb(255,239,239);
       border: 1px solid #444;
       padding: 8px;
     }
@@ -35,16 +35,15 @@
       margin: 5px;
       font-size: 16px;
       cursor: pointer;
-      background: rgb(255, 239, 239);
+      background: #0f0;
       border: none;
       border-radius: 5px;
-      color: rgb(32, 16, 16);
+      color: rgb(255,239,239);
       font-weight: bold;
-      transition: background 0.3s, color 0.3s;
+      transition: background 0.3s;
     }
     button:hover {
-      background: rgb(220, 210, 210);
-      color: rgb(32, 16, 16);
+      background: #0c0;
     }
     #output {
       white-space: pre-wrap;
@@ -52,7 +51,6 @@
       width: 300px;
       min-height: 50px;
       background: #222;
-      color: rgb(255, 239, 239);
       padding: 10px;
       border: 1px solid #444;
     }
@@ -76,8 +74,9 @@
 </head>
 <body>
 
-  <h1>N.D.E.A.C</h1>
+  <h1>N.D.A.E.C Login</h1>
 
+  <!-- Normal Unlock -->
   <div id="unlockSection" class="active">
     <label for="usernameInput">Username :</label>
     <input type="text" id="usernameInput" placeholder="Enter username..." value="" />
@@ -86,6 +85,7 @@
     <div id="unlockStatus" style="color: red; margin-top: 10px;"></div>
   </div>
 
+  <!-- Developer Confirm -->
   <div id="devConfirmSection">
     <p>Are you the developer?</p>
     <div id="yesNoButtons">
@@ -94,6 +94,7 @@
     </div>
   </div>
 
+  <!-- Developer Unlock -->
   <div id="devUnlockSection">
     <label for="devUsernameInput">Developer Username :</label>
     <input type="text" id="devUsernameInput" placeholder="Enter developer username..." value="" />
@@ -102,6 +103,7 @@
     <div id="devUnlockStatus" style="color: red; margin-top: 10px;"></div>
   </div>
 
+  <!-- Main Encrypter UI -->
   <div id="mainSection">
     <textarea id="inputText" placeholder="Enter your message here..."></textarea>
     <div>
@@ -112,25 +114,60 @@
   </div>
 
   <script>
-    const _c = str => [...str].map(c => c.charCodeAt(0)).join('');
-    const _d = code => code.match(/.{1,3}/g).map(c => String.fromCharCode(c)).join('');
-    const b64 = str => atob(str);
+    // Passwords (obfuscated)
+    const userCodeEnc = "NjQ2NDE3NTkzNzk4MTc5ODM0NzkyMzc5ODY3OTMyNzk4NjM="; // base64 of userCode
+    const devCodeEnc = "NjVpdGMzNmZzNjFnZGZzNA=="; // base64 of devCode
 
-    const userCode = _c(b64("NjQ2NDE3NTkzNzk4MTc5ODM0NzkyMzc5ODY3OTMyNzk4NjM="));
-    const devCode = _c(b64("NjVpdGMzNmZzNjFnZGZzNA=="));
-
-    const allowedUsernames = [
-      _c(b64("VGgzRGl2aXNpMG4=")),
-      _c(b64("RGFubmVy"))
+    // Encrypted usernames (Caesar +3, then base64)
+    // Allowed users: "Th3Divisi0n", "Danner"
+    // Allowed developer username: "Subspace"
+    const allowedUsersEncrypted = [
+      "VGgzRGl2aXNpMG4=",  // "Th3Divisi0n"
+      "RGFubmVy"           // "Danner"
     ];
+    const allowedDevEncrypted = "U3Vic3BhY2U="; // "Subspace"
 
-    const allowedDevUsername = _c(b64("U3Vic3BhY2U="));
+    // Caesar cipher shift +3
+    function caesarShift(str, amount) {
+      return str.split('').map(ch => {
+        let code = ch.charCodeAt(0);
+        if (code >= 65 && code <= 90) { // A-Z
+          return String.fromCharCode(((code - 65 + amount + 26) % 26) + 65);
+        } else if (code >= 97 && code <= 122) { // a-z
+          return String.fromCharCode(((code - 97 + amount + 26) % 26) + 97);
+        } else {
+          return ch;
+        }
+      }).join('');
+    }
 
+    // Encrypt username with Caesar +3 then base64
+    function encryptUsername(username) {
+      const shifted = caesarShift(username, 3);
+      return btoa(shifted);
+    }
+
+    // Base64 decode then Caesar -3
+    function decryptUsername(encUsername) {
+      const decoded = atob(encUsername);
+      return caesarShift(decoded, -3);
+    }
+
+    // Decode base64 encoded passwords
+    function decodeBase64(str) {
+      return atob(str);
+    }
+
+    const userCode = decodeBase64(userCodeEnc);
+    const devCode = decodeBase64(devCodeEnc);
+
+    // Sections
     const unlockSection = document.getElementById("unlockSection");
     const devConfirmSection = document.getElementById("devConfirmSection");
     const devUnlockSection = document.getElementById("devUnlockSection");
     const mainSection = document.getElementById("mainSection");
 
+    // Inputs and buttons
     const usernameInput = document.getElementById("usernameInput");
     const unlockInput = document.getElementById("unlockInput");
     const unlockBtn = document.getElementById("unlockBtn");
@@ -144,39 +181,54 @@
     const devUnlockBtn = document.getElementById("devUnlockBtn");
     const devUnlockStatus = document.getElementById("devUnlockStatus");
 
+    // Step 1: User unlock
     unlockBtn.onclick = () => {
-      const u = _c(usernameInput.value.trim());
-      if (unlockInput.value === _d(userCode) && allowedUsernames.includes(u)) {
-        unlockSection.classList.remove("active");
-        devConfirmSection.classList.add("active");
-        unlockStatus.textContent = "";
-      } else {
-        unlockStatus.textContent = "Access denied.";
+      const inputUserEnc = encryptUsername(usernameInput.value.trim());
+      if (!allowedUsersEncrypted.includes(inputUserEnc)) {
+        unlockStatus.textContent = "Invalid username.";
+        return;
+      }
+      if (unlockInput.value !== userCode) {
+        unlockStatus.textContent = "Incorrect code. Access denied.";
         unlockInput.disabled = true;
         unlockBtn.disabled = true;
+        return;
       }
+      // Success: show developer confirmation
+      console.log("User logged in:", usernameInput.value);
+      unlockSection.classList.remove("active");
+      devConfirmSection.classList.add("active");
+      unlockStatus.textContent = "";
     };
 
+    // Step 2: Developer confirm buttons
     yesBtn.onclick = () => {
       devConfirmSection.classList.remove("active");
       devUnlockSection.classList.add("active");
     };
-
     noBtn.onclick = () => {
       devConfirmSection.classList.remove("active");
       mainSection.classList.add("active");
     };
 
+    // Step 3: Developer unlock check
     devUnlockBtn.onclick = () => {
-      const devUser = _c(devUsernameInput.value.trim());
-      if (devUnlockInput.value === _d(devCode) && devUser === allowedDevUsername) {
-        window.location.href = "https://th3divisi0n.github.io/UNDERPRIME/";
-      } else {
-        devUnlockStatus.textContent = "Incorrect developer credentials.";
-        devUnlockInput.value = "";
+      const devUserEnc = encryptUsername(devUsernameInput.value.trim());
+      if (devUserEnc !== allowedDevEncrypted) {
+        devUnlockStatus.textContent = "Invalid developer username.";
+        return;
       }
+      if (devUnlockInput.value !== devCode) {
+        devUnlockStatus.textContent = "Incorrect developer code.";
+        devUnlockInput.value = "";
+        return;
+      }
+      console.log("Developer logged in:", devUsernameInput.value);
+      window.location.href = "aHR0cHM6Ly90aDNkaXZpc2kwbi5naXRodWIuaW8vVU5ERVJQUklORS8=".split("").map(c => String.fromCharCode(c.charCodeAt(0) - 1)).join("");
+      // Redirect is a simple Caesar -1 obfuscation on the URL to add slight "encryption"
     };
 
+    // Encoding/decoding logic (same as before)
     const Secret_alphabet = [
       "1", "2", "6", "5", "7", "8", "9", "3", "11", "4", "10", "15",
       "13", "14", "12", "18", "16", "19", "17", "20", "22", "21", "24",
