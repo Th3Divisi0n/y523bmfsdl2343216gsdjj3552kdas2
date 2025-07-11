@@ -54,13 +54,16 @@
       padding: 10px;
       border: 1px solid #444;
     }
-    #unlockSection, #mainSection {
+    #unlockSection, #devConfirmSection, #devUnlockSection, #mainSection {
       display: none;
       flex-direction: column;
       align-items: center;
     }
-    #unlockSection.active, #mainSection.active {
+    #unlockSection.active, #devConfirmSection.active, #devUnlockSection.active, #mainSection.active {
       display: flex;
+    }
+    #yesNoButtons > button {
+      width: 100px;
     }
   </style>
 </head>
@@ -68,11 +71,27 @@
 
   <h1>Custom Alphabet Encrypter</h1>
 
-  <!-- Unlock screen -->
+  <!-- Normal Unlock -->
   <div id="unlockSection" class="active">
     <input type="password" id="unlockInput" placeholder="Enter unlock code..." />
     <button id="unlockBtn">Unlock</button>
     <div id="unlockStatus" style="color: red; margin-top: 10px;"></div>
+  </div>
+
+  <!-- Developer Confirm -->
+  <div id="devConfirmSection">
+    <p>Are you the developer?</p>
+    <div id="yesNoButtons">
+      <button id="yesBtn">Yes</button>
+      <button id="noBtn">No</button>
+    </div>
+  </div>
+
+  <!-- Developer Unlock -->
+  <div id="devUnlockSection">
+    <input type="password" id="devUnlockInput" placeholder="Enter developer code..." />
+    <button id="devUnlockBtn">Unlock Dev</button>
+    <div id="devUnlockStatus" style="color: red; margin-top: 10px;"></div>
   </div>
 
   <!-- Main Encrypter UI -->
@@ -86,64 +105,66 @@
   </div>
 
   <script>
-    // XOR decode helper function
-    function xorDecode(str, key) {
-      let decoded = "";
-      for (let i = 0; i < str.length; i++) {
-        decoded += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-      }
-      return decoded;
-    }
+    // Unlock codes (user and dev)
+    const userCode = "64641759379817983479237986793279863";
+    const devCode = "65itc36fs61gdfs4";
 
-    // User unlock code (plain string stored obfuscated as hex)
-    (function(){
-      var _0xuser = [
-        "\x36\x34\x36\x34\x31\x37\x35\x39\x33\x37\x39\x38\x31\x37\x39\x38\x33\x34\x37\x39\x32\x33\x37\x39\x38\x36\x37\x39\x33\x32\x37\x39\x38\x36\x33"
-      ];
-      window.unlockCode = _0xuser[0];
-    })();
-
-    // Developer unlock code XOR-obfuscated with "secretkey"
-    (function(){
-      const obfDevPass = "\x07\x18\x0f\x17\x16\x56\x5b\x59\x3b\x5b\x5a\x5f\x58\x1b\x02\x59\x3d";
-      const key = "secretkey";
-      window.devCode = xorDecode(obfDevPass, key);  // "65itc36fs61gdfs4"
-    })();
-
-    // Unlock logic
-    const unlockInput = document.getElementById("unlockInput");
+    // Sections
     const unlockSection = document.getElementById("unlockSection");
+    const devConfirmSection = document.getElementById("devConfirmSection");
+    const devUnlockSection = document.getElementById("devUnlockSection");
     const mainSection = document.getElementById("mainSection");
-    const unlockStatus = document.getElementById("unlockStatus");
+
+    // Unlock inputs and buttons
+    const unlockInput = document.getElementById("unlockInput");
     const unlockBtn = document.getElementById("unlockBtn");
+    const unlockStatus = document.getElementById("unlockStatus");
 
-    let attempts = 0;
-    const maxAttempts = 1;
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
 
+    const devUnlockInput = document.getElementById("devUnlockInput");
+    const devUnlockBtn = document.getElementById("devUnlockBtn");
+    const devUnlockStatus = document.getElementById("devUnlockStatus");
+
+    // Step 1: User unlock
     unlockBtn.onclick = () => {
-      const val = unlockInput.value;
-      if (val === window.unlockCode) {
-        // User unlock
+      if (unlockInput.value === userCode) {
+        // Hide user unlock, show developer confirmation
         unlockSection.classList.remove("active");
-        mainSection.classList.add("active");
+        devConfirmSection.classList.add("active");
         unlockStatus.textContent = "";
-      } else if (val === window.devCode) {
-        // Developer unlock - redirect to your dev page
-        window.location.href = "https://th3divisi0n.github.io/UNDERPRIME/";
       } else {
-        attempts++;
-        if (attempts >= maxAttempts) {
-          unlockStatus.textContent = "Incorrect code. Access denied.";
-          unlockInput.disabled = true;
-          unlockBtn.disabled = true;
-          unlockInput.value = "";
-        } else {
-          unlockStatus.textContent = `Incorrect code. You have ${maxAttempts - attempts} attempts left.`;
-        }
+        unlockStatus.textContent = "Incorrect code. Access denied.";
+        unlockInput.disabled = true;
+        unlockBtn.disabled = true;
       }
     };
 
-    // Encoding/decoding logic
+    // Step 2: Developer confirm buttons
+    yesBtn.onclick = () => {
+      // Hide confirm, show dev unlock input
+      devConfirmSection.classList.remove("active");
+      devUnlockSection.classList.add("active");
+    };
+    noBtn.onclick = () => {
+      // Hide confirm, show main UI
+      devConfirmSection.classList.remove("active");
+      mainSection.classList.add("active");
+    };
+
+    // Step 3: Developer unlock check
+    devUnlockBtn.onclick = () => {
+      if (devUnlockInput.value === devCode) {
+        // Redirect developer to their page
+        window.location.href = "https://th3divisi0n.github.io/UNDERPRIME/";
+      } else {
+        devUnlockStatus.textContent = "Incorrect developer code.";
+        devUnlockInput.value = "";
+      }
+    };
+
+    // Encoding/decoding logic (same as before)
     const Secret_alphabet = [
       "1", "2", "6", "5", "7", "8", "9", "3", "11", "4", "10", "15",
       "13", "14", "12", "18", "16", "19", "17", "20", "22", "21", "24",
