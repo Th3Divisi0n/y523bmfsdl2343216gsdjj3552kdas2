@@ -192,7 +192,9 @@
         devUnlockInput.value = "";
         return;
       }
-      window.location.href = "aHR0cHM6Ly90aDNkaXZpc2kwbi5naXRodWIuaW8vVU5ERVJQUklORS8=".split("").map(c => String.fromCharCode(c.charCodeAt(0) - 1)).join("");
+const encodedURL = "aHR0cHM6Ly90aDNkaXZpc2kwbi5naXRodWIuaW8vVU5ERVJQUklORS8=";
+window.location.href = atob(encodedURL);
+
     };
 
     // Encoder/Decoder
