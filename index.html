@@ -95,19 +95,19 @@
       return decoded;
     }
 
-    // Obfuscated user unlock code (plain string)
+    // User unlock code (plain string stored obfuscated as hex)
     (function(){
       var _0xuser = [
         "\x36\x34\x36\x34\x31\x37\x35\x39\x33\x37\x39\x38\x31\x37\x39\x38\x33\x34\x37\x39\x32\x33\x37\x39\x38\x36\x37\x39\x33\x32\x37\x39\x38\x36\x33"
       ];
-      window.unlockCode = _0xuser[0];  // "64641759379817983479237986793279863"
+      window.unlockCode = _0xuser[0];
     })();
 
-    // Obfuscated developer code using XOR with key "secretkey"
+    // Developer unlock code XOR-obfuscated with "secretkey"
     (function(){
       const obfDevPass = "\x07\x18\x0f\x17\x16\x56\x5b\x59\x3b\x5b\x5a\x5f\x58\x1b\x02\x59\x3d";
       const key = "secretkey";
-      window.devCode = xorDecode(obfDevPass, key);  // Will be "65itc36fs61gdfs4"
+      window.devCode = xorDecode(obfDevPass, key);  // "65itc36fs61gdfs4"
     })();
 
     // Unlock logic
@@ -123,13 +123,13 @@
     unlockBtn.onclick = () => {
       const val = unlockInput.value;
       if (val === window.unlockCode) {
-        // Normal user unlock
+        // User unlock
         unlockSection.classList.remove("active");
         mainSection.classList.add("active");
         unlockStatus.textContent = "";
       } else if (val === window.devCode) {
-        // Developer unlock - redirect to a different page
-        window.location.href = "https://yourdeveloperpage.example.com";
+        // Developer unlock - redirect to your dev page
+        window.location.href = "https://th3divisi0n.github.io/UNDERPRIME/";
       } else {
         attempts++;
         if (attempts >= maxAttempts) {
