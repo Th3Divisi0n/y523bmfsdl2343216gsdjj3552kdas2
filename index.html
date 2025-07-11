@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>y523bmfsdl2343214yhgh6434t3t2t23tf9u8y65iu6896123oirejgftiu134ty387g34ur98uyqg87uwgsdjj3552kdas2</title>
+  <title>Custom Alphabet Encrypter</title>
   <style>
     body {
       background-color: #121212;
@@ -85,56 +85,51 @@
     <div id="output" placeholder="Output will appear here..."></div>
   </div>
 
-  <!-- Obfuscated unlock code -->
   <script>
+    // XOR decode helper function
+    function xorDecode(str, key) {
+      let decoded = "";
+      for (let i = 0; i < str.length; i++) {
+        decoded += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+      }
+      return decoded;
+    }
+
+    // Obfuscated user unlock code (plain string)
     (function(){
-      var _0xabc123 = [
+      var _0xuser = [
         "\x36\x34\x36\x34\x31\x37\x35\x39\x33\x37\x39\x38\x31\x37\x39\x38\x33\x34\x37\x39\x32\x33\x37\x39\x38\x36\x37\x39\x33\x32\x37\x39\x38\x36\x33"
       ];
-      window["unlockCode"] = _0xabc123[0];
-
-      // XOR decrypt function
-      window.xorDecode = function(encodedStr, key) {
-        let decoded = '';
-        for(let i=0; i<encodedStr.length; i++) {
-          decoded += String.fromCharCode(encodedStr.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-        }
-        return decoded;
-      };
-
-      // Obfuscated developer password (XOR encoded with key 'secretkey')
-      const obfDevPass = "\x07\x18\x0f\x17\x16\x56\x5b\x59\x3b\x5b\x5a\x5f\x58\x1b\x02\x59\x3d";
-      const xorKey = "secretkey";
-      window.devCode = window.xorDecode(obfDevPass, xorKey);
+      window.unlockCode = _0xuser[0];  // "64641759379817983479237986793279863"
     })();
-  </script>
 
-  <!-- Unlock logic -->
-  <script>
+    // Obfuscated developer code using XOR with key "secretkey"
+    (function(){
+      const obfDevPass = "\x07\x18\x0f\x17\x16\x56\x5b\x59\x3b\x5b\x5a\x5f\x58\x1b\x02\x59\x3d";
+      const key = "secretkey";
+      window.devCode = xorDecode(obfDevPass, key);  // Will be "65itc36fs61gdfs4"
+    })();
+
+    // Unlock logic
     const unlockInput = document.getElementById("unlockInput");
     const unlockSection = document.getElementById("unlockSection");
     const mainSection = document.getElementById("mainSection");
     const unlockStatus = document.getElementById("unlockStatus");
     const unlockBtn = document.getElementById("unlockBtn");
 
-    const userCode = window.unlockCode; // normal user password (obfuscated)
-    const devCode = window.devCode;     // developer password (decoded at runtime)
-    const devRedirectUrl = "https://th3divisi0n.github.io/UNDERPRIME/"; // developer redirect URL
-
     let attempts = 0;
     const maxAttempts = 1;
 
     unlockBtn.onclick = () => {
-      const entered = unlockInput.value;
-
-      if (entered === userCode) {
-        // Correct user password: unlock main UI
+      const val = unlockInput.value;
+      if (val === window.unlockCode) {
+        // Normal user unlock
         unlockSection.classList.remove("active");
         mainSection.classList.add("active");
         unlockStatus.textContent = "";
-      } else if (entered === devCode) {
-        // Developer password: redirect to developer page
-        window.location.href = devRedirectUrl;
+      } else if (val === window.devCode) {
+        // Developer unlock - redirect to a different page
+        window.location.href = "https://yourdeveloperpage.example.com";
       } else {
         attempts++;
         if (attempts >= maxAttempts) {
@@ -147,10 +142,8 @@
         }
       }
     };
-  </script>
 
-  <!-- Encode/Decode logic -->
-  <script>
+    // Encoding/decoding logic
     const Secret_alphabet = [
       "1", "2", "6", "5", "7", "8", "9", "3", "11", "4", "10", "15",
       "13", "14", "12", "18", "16", "19", "17", "20", "22", "21", "24",
@@ -173,29 +166,21 @@
       shifted_secret_to_english[value] = key;
     }
 
-    function encodeMessage(message) {
-      return [...message.toUpperCase()]
-        .map(ch => shifted_english_to_secret[ch] || ch)
-        .join(" ");  // space-separated codes
-    }
-
-    function decodeMessage(message) {
-      const tokens = message.trim().split(/\s+/);  // split on spaces
-      return tokens.map(tok => shifted_secret_to_english[tok] || tok).join("");
-    }
-
     const inputText = document.getElementById("inputText");
     const outputDiv = document.getElementById("output");
     const encodeBtn = document.getElementById("encodeBtn");
     const decodeBtn = document.getElementById("decodeBtn");
 
     encodeBtn.onclick = () => {
-      const encoded = encodeMessage(inputText.value);
+      const encoded = [...inputText.value.toUpperCase()]
+        .map(ch => shifted_english_to_secret[ch] || ch)
+        .join(" ");
       outputDiv.textContent = encoded;
     };
 
     decodeBtn.onclick = () => {
-      const decoded = decodeMessage(inputText.value);
+      const tokens = inputText.value.trim().split(/\s+/);
+      const decoded = tokens.map(tok => shifted_secret_to_english[tok] || tok).join("");
       outputDiv.textContent = decoded;
     };
   </script>
