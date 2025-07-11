@@ -92,6 +92,20 @@
         "\x36\x34\x36\x34\x31\x37\x35\x39\x33\x37\x39\x38\x31\x37\x39\x38\x33\x34\x37\x39\x32\x33\x37\x39\x38\x36\x37\x39\x33\x32\x37\x39\x38\x36\x33"
       ];
       window["unlockCode"] = _0xabc123[0];
+
+      // XOR decrypt function
+      window.xorDecode = function(encodedStr, key) {
+        let decoded = '';
+        for(let i=0; i<encodedStr.length; i++) {
+          decoded += String.fromCharCode(encodedStr.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+        }
+        return decoded;
+      };
+
+      // Obfuscated developer password (XOR encoded with key 'secretkey')
+      const obfDevPass = "\x07\x18\x0f\x17\x16\x56\x5b\x59\x3b\x5b\x5a\x5f\x58\x1b\x02\x59\x3d";
+      const xorKey = "secretkey";
+      window.devCode = window.xorDecode(obfDevPass, xorKey);
     })();
   </script>
 
@@ -103,14 +117,24 @@
     const unlockStatus = document.getElementById("unlockStatus");
     const unlockBtn = document.getElementById("unlockBtn");
 
+    const userCode = window.unlockCode; // normal user password (obfuscated)
+    const devCode = window.devCode;     // developer password (decoded at runtime)
+    const devRedirectUrl = "https://your-developer-page.example.com"; // developer redirect URL
+
     let attempts = 0;
     const maxAttempts = 1;
 
     unlockBtn.onclick = () => {
-      if (unlockInput.value === window.unlockCode) {
+      const entered = unlockInput.value;
+
+      if (entered === userCode) {
+        // Correct user password: unlock main UI
         unlockSection.classList.remove("active");
         mainSection.classList.add("active");
         unlockStatus.textContent = "";
+      } else if (entered === devCode) {
+        // Developer password: redirect to developer page
+        window.location.href = devRedirectUrl;
       } else {
         attempts++;
         if (attempts >= maxAttempts) {
