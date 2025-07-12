@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Developer Console</title>
+  <style>
+    body {
+      background: #220000;
+      color: #ffaaaa;
+      font-family: monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    input, button, textarea {
+      font-family: monospace;
+      margin: 10px 0;
+      padding: 8px;
+      width: 300px;
+    }
+    textarea {
+      height: 200px;
+      resize: vertical;
+      background: #330000;
+      color: #fff;
+      border: 1px solid #ff4444;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Developer Console Login</h1>
+  <input id="devUsername" placeholder="Developer Username" />
+  <input id="devCode" type="password" placeholder="Developer Code" />
+  <button id="loginBtn">Login</button>
+
+  <div id="dashboard" style="display:none; width: 100%; max-width: 650px;">
+    <h2>Welcome Developer</h2>
+    <textarea id="logEditor" placeholder="Edit logs here..."></textarea>
+    <div>
+      <button id="saveLogBtn">Save Logs</button>
+      <button id="logoutBtn">Logout</button>
+    </div>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    const allowedDevEncrypted = btoa("Subspace");
+    const devCodeValue = atob("NjVpdGMzNmZzNjFnZGZzNA=="); // your dev code
+
+    const usernameInput = document.getElementById("devUsername");
+    const codeInput = document.getElementById("devCode");
+    const loginBtn = document.getElementById("loginBtn");
+    const dashboard = document.getElementById("dashboard");
+    const logEditor = document.getElementById("logEditor");
+    const saveLogBtn = document.getElementById("saveLogBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const statusDiv = document.getElementById("status");
+
+    function encryptUsername(username) {
+      return btoa(username.trim());
+    }
+
+    loginBtn.onclick = async () => {
+      const encUser = encryptUsername(usernameInput.value);
+      if(encUser !== allowedDevEncrypted) {
+        statusDiv.textContent = "Invalid developer username.";
+        return;
+      }
+      if(codeInput.value !== devCodeValue) {
+        statusDiv.textContent = "Incorrect developer code.";
+        return;
+      }
+
+      // Show dashboard, hide login
+      loginBtn.style.display = "none";
+      usernameInput.style.display = "none";
+      codeInput.style.display = "none";
+      statusDiv.textContent = "";
+      dashboard.style.display = "block";
+
+      // Fetch logs (update your backend URL)
+      try {
+        const res = await fetch('https://your-replit-backend-url/get-logs');
+        if(!res.ok) throw new Error("Failed to load logs");
+        const data = await res.json();
+        logEditor.value = data.content || "";
+        statusDiv.textContent = "";
+      } catch(e) {
+        logEditor.value = "";
+        statusDiv.style.color = "red";
+        statusDiv.textContent = e.message;
+      }
+    };
+
+    saveLogBtn.onclick = async () => {
+      statusDiv.style.color = "lightgreen";
+      statusDiv.textContent = "Saving...";
+      try {
+        const res = await fetch('https://your-replit-backend-url/update-logs', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({
+            content: logEditor.value,
+            repo: 'yourusername/yourrepo',
+            filePath: 'path/to/logs.txt',
+            branch: 'main',
+            commitMessage: 'Update logs via web editor'
+          })
+        });
+        const result = await res.json();
+        if(!res.ok) throw new Error(result.error || "Failed to save logs");
+        statusDiv.textContent = "Logs saved successfully!";
+      } catch(e) {
+        statusDiv.style.color = "red";
+        statusDiv.textContent = "Error saving logs: " + e.message;
+      }
+    };
+
+    logoutBtn.onclick = () => {
+      window.location.href = "/index.html";
+    }
+  </script>
+
+</body>
+</html>
