@@ -80,31 +80,30 @@
       statusDiv.textContent = "";
       dashboard.style.display = "block";
 
-      // Fetch logs (update your backend URL)
-      try {
-        const res = await fetch('https://your-replit-backend-url/get-logs');
-        if(!res.ok) throw new Error("Failed to load logs");
-        const data = await res.json();
-        logEditor.value = data.content || "";
-        statusDiv.textContent = "";
-      } catch(e) {
-        logEditor.value = "";
-        statusDiv.style.color = "red";
-        statusDiv.textContent = e.message;
-      }
-    };
+try {
+  const res = await fetch('https://10157a68-f096-4009-9df9-dbbd8bd0b864-00-24oumlwk649pm.janeway.replit.dev/');
+  if (!res.ok) throw new Error("Failed to load logs");
+  const data = await res.json();
+  logEditor.value = data.content || "";
+  statusDiv.textContent = "";
+} catch (e) {
+  logEditor.value = "";
+  statusDiv.style.color = "red";
+  statusDiv.textContent = e.message;
+}
+
 
     saveLogBtn.onclick = async () => {
       statusDiv.style.color = "lightgreen";
       statusDiv.textContent = "Saving...";
       try {
-        const res = await fetch('https://your-replit-backend-url/update-logs', {
+        const res = await fetch('https://10157a68-f096-4009-9df9-dbbd8bd0b864-00-24oumlwk649pm.janeway.replit.dev/', {
           method: 'POST',
           headers: {'Content-Type':'application/json'},
           body: JSON.stringify({
             content: logEditor.value,
-            repo: 'yourusername/yourrepo',
-            filePath: 'path/to/logs.txt',
+            repo: 'th3divisi0n/y523bmfsdl2343214yhgh6434t3t2t23tf9u8y65iu6896123oirejgftiu134ty387g34ur98uyqg87uwgsdjj3552kdas2',
+            filePath: 'logs.txt',
             branch: 'main',
             commitMessage: 'Update logs via web editor'
           })
