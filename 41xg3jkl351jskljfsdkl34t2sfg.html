@@ -5,37 +5,62 @@
   <title>Developer Console</title>
   <style>
     body {
-      background: rgb(32,16,16);;
+      background: rgb(32,16,16);
       color: rgb(255,239,239);
       font-family: monospace;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 20px;
+      min-height: 100vh;
     }
     input, button, textarea {
       font-family: monospace;
       margin: 10px 0;
       padding: 8px;
       width: 300px;
+      border: 1px solid #ff4444;
+      border-radius: 4px;
+      background: #330000;
+      color: #fff;
     }
     textarea {
       height: 200px;
       resize: vertical;
-      background: #330000;
-      color: #fff;
-      border: 1px solid #ff4444;
+    }
+    button {
+      cursor: pointer;
+      background: #ff4444;
+      border: none;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #cc0000;
+    }
+    #dashboard {
+      width: 100%;
+      max-width: 650px;
+      margin-top: 20px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+    #status {
+      margin-top: 10px;
+      min-height: 20px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
   <h1>Developer Console Login</h1>
-  <input id="devUsername" placeholder="Developer Username" />
-  <input id="devCode" type="password" placeholder="Developer Code" />
+  <input id="devUsername" placeholder="Developer Username" autocomplete="off" />
+  <input id="devCode" type="password" placeholder="Developer Code" autocomplete="off" />
   <button id="loginBtn">Login</button>
 
-  <div id="dashboard" style="display:none; width: 100%; max-width: 650px;">
+  <div id="dashboard">
     <h2>Welcome Developer</h2>
     <textarea id="logEditor" placeholder="Edit logs here..."></textarea>
     <div>
@@ -46,9 +71,11 @@
   </div>
 
   <script>
+    // Developer credentials encoded
     const allowedDevEncrypted = btoa("Subspace");
-    const devCodeValue = atob("NjVpdGMzNmZzNjFnZGZzNA=="); // your dev code
+    const devCodeValue = atob("NjVpdGMzNmZzNjFnZGZzNA=="); // "65itc36fs61gdfs4"
 
+    // Get elements
     const usernameInput = document.getElementById("devUsername");
     const codeInput = document.getElementById("devCode");
     const loginBtn = document.getElementById("loginBtn");
@@ -58,11 +85,15 @@
     const logoutBtn = document.getElementById("logoutBtn");
     const statusDiv = document.getElementById("status");
 
+    // Helper: base64 encode username
     function encryptUsername(username) {
       return btoa(username.trim());
     }
 
+    // Login button event
     loginBtn.onclick = async () => {
+      statusDiv.style.color = "red";
+      statusDiv.textContent = "";
       const encUser = encryptUsername(usernameInput.value);
       if(encUser !== allowedDevEncrypted) {
         statusDiv.textContent = "Invalid developer username.";
@@ -73,26 +104,28 @@
         return;
       }
 
-      // Show dashboard, hide login
+      // Success: show dashboard, hide login
       loginBtn.style.display = "none";
       usernameInput.style.display = "none";
       codeInput.style.display = "none";
       statusDiv.textContent = "";
-      dashboard.style.display = "block";
+      statusDiv.style.color = "lightgreen";
+      dashboard.style.display = "flex";
 
-try {
-  const res = await fetch('https://10157a68-f096-4009-9df9-dbbd8bd0b864-00-24oumlwk649pm.janeway.replit.dev/');
-  if (!res.ok) throw new Error("Failed to load logs");
-  const data = await res.json();
-  logEditor.value = data.content || "";
-  statusDiv.textContent = "";
-} catch (e) {
-  logEditor.value = "";
-  statusDiv.style.color = "red";
-  statusDiv.textContent = e.message;
-}
+      // Fetch logs from backend
+      try {
+        const res = await fetch('https://10157a68-f096-4009-9df9-dbbd8bd0b864-00-24oumlwk649pm.janeway.replit.dev/');
+        if (!res.ok) throw new Error("Failed to load logs");
+        const data = await res.json();
+        logEditor.value = data.content || "";
+      } catch (e) {
+        logEditor.value = "";
+        statusDiv.style.color = "red";
+        statusDiv.textContent = "Error loading logs: " + e.message;
+      }
+    };
 
-
+    // Save logs button event
     saveLogBtn.onclick = async () => {
       statusDiv.style.color = "lightgreen";
       statusDiv.textContent = "Saving...";
@@ -110,6 +143,7 @@ try {
         });
         const result = await res.json();
         if(!res.ok) throw new Error(result.error || "Failed to save logs");
+        statusDiv.style.color = "lightgreen";
         statusDiv.textContent = "Logs saved successfully!";
       } catch(e) {
         statusDiv.style.color = "red";
@@ -117,9 +151,19 @@ try {
       }
     };
 
+    // Logout button event
     logoutBtn.onclick = () => {
-      window.location.href = "/index.html";
-    }
+      // Reset UI for fresh login
+      dashboard.style.display = "none";
+      loginBtn.style.display = "block";
+      usernameInput.style.display = "block";
+      codeInput.style.display = "block";
+      usernameInput.value = "";
+      codeInput.value = "";
+      logEditor.value = "";
+      statusDiv.textContent = "";
+      statusDiv.style.color = "red";
+    };
   </script>
 
 </body>
