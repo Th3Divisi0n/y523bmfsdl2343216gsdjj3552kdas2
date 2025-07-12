@@ -38,6 +38,15 @@
     button:hover {
       background: #cc0000;
     }
+    a {
+      color: #00ffff;
+      margin-top: 10px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
     #dashboard {
       width: 100%;
       max-width: 650px;
@@ -55,105 +64,107 @@
 </head>
 <body>
 
-  <h1>Developer Console Login</h1>
+  <h1>N.D.A.E.C Developer Login</h1>
   <input id="devUsername" placeholder="Developer Username" autocomplete="off" />
   <input id="devCode" type="password" placeholder="Developer Code" autocomplete="off" />
   <button id="loginBtn">Login</button>
 
   <div id="dashboard">
-    <h2>Welcome Developer</h2>
+    <h2>Welcome Subspace</h2>
+
+    <!-- External Links -->
+    <a href="https://discord.gg/542Hn53EZ7" target="_blank">Join Discord</a>
+    <a href="https://c0127bf2-57e5-45d4-bfba-3043ae63050d-00-1jlsgzcv2qwlo.worf.replit.dev" target="_blank">Go to Replit Backend</a>
+    <a href="https://replit.com/@The-Faith-Famil/MortifiedTinyWearable#ip_log.txt" target="_blank">🟡 RUN FIRST</a>
+
+    <!-- Log Editor -->
     <textarea id="logEditor" placeholder="Edit logs here..."></textarea>
+
+    <!-- File Controls -->
     <div>
-      <button id="saveLogBtn">Save Logs</button>
+      <button id="downloadBtn">💾 Download Logs</button>
+      <button id="importBtn">📂 Import Logs</button>
+      <input type="file" id="fileInput" accept=".txt" style="display: none;" />
       <button id="logoutBtn">Logout</button>
     </div>
+
     <div id="status"></div>
   </div>
 
   <script>
     // Developer credentials encoded
     const allowedDevEncrypted = btoa("Subspace");
-    const devCodeValue = atob("NjVpdGMzNmZzNjFnZGZzNA=="); // "65itc36fs61gdfs4"
+    const devCodeValue = atob("NjVpdGMzNmZzNjFnZGZzNA==");
 
-    // Get elements
     const usernameInput = document.getElementById("devUsername");
     const codeInput = document.getElementById("devCode");
     const loginBtn = document.getElementById("loginBtn");
     const dashboard = document.getElementById("dashboard");
     const logEditor = document.getElementById("logEditor");
-    const saveLogBtn = document.getElementById("saveLogBtn");
     const logoutBtn = document.getElementById("logoutBtn");
     const statusDiv = document.getElementById("status");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const importBtn = document.getElementById("importBtn");
+    const fileInput = document.getElementById("fileInput");
 
-    // Helper: base64 encode username
     function encryptUsername(username) {
       return btoa(username.trim());
     }
 
-    // Login button event
-    loginBtn.onclick = async () => {
+    loginBtn.onclick = () => {
       statusDiv.style.color = "red";
       statusDiv.textContent = "";
       const encUser = encryptUsername(usernameInput.value);
-      if(encUser !== allowedDevEncrypted) {
+      if (encUser !== allowedDevEncrypted) {
         statusDiv.textContent = "Invalid developer username.";
         return;
       }
-      if(codeInput.value !== devCodeValue) {
+      if (codeInput.value !== devCodeValue) {
         statusDiv.textContent = "Incorrect developer code.";
         return;
       }
 
-      // Success: show dashboard, hide login
       loginBtn.style.display = "none";
       usernameInput.style.display = "none";
       codeInput.style.display = "none";
-      statusDiv.textContent = "";
-      statusDiv.style.color = "lightgreen";
       dashboard.style.display = "flex";
-
-      // Fetch logs from backend
-      try {
-        const res = await fetch('https://10157a68-f096-4009-9df9-dbbd8bd0b864-00-24oumlwk649pm.janeway.replit.dev/');
-        if (!res.ok) throw new Error("Failed to load logs");
-        const data = await res.json();
-        logEditor.value = data.content || "";
-      } catch (e) {
-        logEditor.value = "";
-        statusDiv.style.color = "red";
-        statusDiv.textContent = "Error loading logs: " + e.message;
-      }
-    };
-
-    // Save logs button event
-    saveLogBtn.onclick = async () => {
       statusDiv.style.color = "lightgreen";
-      statusDiv.textContent = "Saving...";
-      try {
-        const res = await fetch('https://10157a68-f096-4009-9df9-dbbd8bd0b864-00-24oumlwk649pm.janeway.replit.dev/', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({
-            content: logEditor.value,
-            repo: 'th3divisi0n/y523bmfsdl2343214yhgh6434t3t2t23tf9u8y65iu6896123oirejgftiu134ty387g34ur98uyqg87uwgsdjj3552kdas2',
-            filePath: 'logs.txt',
-            branch: 'main',
-            commitMessage: 'Update logs via web editor'
-          })
-        });
-        const result = await res.json();
-        if(!res.ok) throw new Error(result.error || "Failed to save logs");
-        statusDiv.style.color = "lightgreen";
-        statusDiv.textContent = "Logs saved successfully!";
-      } catch(e) {
-        statusDiv.style.color = "red";
-        statusDiv.textContent = "Error saving logs: " + e.message;
-      }
+      statusDiv.textContent = "Access granted.";
     };
 
-    // Logout button event
+    // Download logs as .txt
+    downloadBtn.onclick = () => {
+      const blob = new Blob([logEditor.value], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'logs.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      statusDiv.style.color = "lightgreen";
+      statusDiv.textContent = "Log file downloaded.";
+    };
+
+    // Trigger file input for importing logs
+    importBtn.onclick = () => {
+      fileInput.click();
+    };
+
+    // Load file content into editor
+    fileInput.onchange = () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        logEditor.value = e.target.result;
+        statusDiv.style.color = "lightgreen";
+        statusDiv.textContent = `Loaded file: ${file.name}`;
+      };
+      reader.readAsText(file);
+    };
+
     logoutBtn.onclick = () => {
-      // Reset UI for fresh login
       dashboard.style.display = "none";
       loginBtn.style.display = "block";
       usernameInput.style.display = "block";
